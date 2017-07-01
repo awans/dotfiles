@@ -5,10 +5,9 @@ set runtimepath+=/Users/awans/.vim/bundles/repos/github.com/Shougo/dein.vim
 
 if dein#load_state('/Users/awans/.vim/bundles')
   call dein#begin('/Users/awans/.vim/bundles')
-
   call dein#add('/Users/awans/.vim/bundles/repos/github.com/Shougo/dein.vim')
-  call dein#add('Shougo/neocomplete.vim')
   call dein#add('Shougo/deoplete.nvim')
+  call dein#add('zchee/deoplete-jedi')
   call dein#add('tpope/vim-surround')
   call dein#add('tpope/vim-fugitive')
   call dein#add('tpope/vim-abolish')
@@ -18,13 +17,16 @@ if dein#load_state('/Users/awans/.vim/bundles')
   call dein#add('fisadev/vim-isort')
   call dein#add('scrooloose/nerdtree')
   call dein#add('octref/RootIgnore')
-  call dein#add('Xuyuanp/nerdtree-git-plugin')
   call dein#add('junegunn/fzf')
-  call dein#add('nvie/vim-flake8')
+  call dein#add('vim-syntastic/syntastic')
   call dein#add('vim-airline/vim-airline')
+  call dein#add('bling/vim-bufferline')
   call dein#add('vim-airline/vim-airline-themes')
+  call dein#add('kana/vim-arpeggio')
   call dein#add('mileszs/ack.vim')
   call dein#add('mhartington/oceanic-next')
+  call dein#add('sjbach/lusty')
+  call dein#add('vim-scripts/BufOnly.vim')
   call dein#end()
   call dein#save_state()
 endif
@@ -55,15 +57,6 @@ endfunction
 nnoremap <C-\> :call ToggleTree()<CR>
 
 let NERDTreeRespectWildIgnore=1
-
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-" lint on save and ctrl+l
-autocmd FileType python nnoremap <C-l> :call Flake8()<CR>
-
-autocmd BufWritePost *.py call Flake8()
-autocmd BufWritePost *.py :Isort
-
 " Tags command based on fzf
 function! s:tags_sink(line)
   let parts = split(a:line, '\t\zs')
@@ -114,5 +107,46 @@ colorscheme OceanicNext
 
 cnoreabbrev Ack Ack!
 nnoremap <Leader>a :Ack!<Space>
+"
 " auto remove trailing whitespace
 autocmd BufWritePre * %s/\s\+$//e
+
+" suggested syntastic defaults
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+
+autocmd BufWritePost *.py :Isort
+let g:deoplete#enable_at_startup = 1
+noswapfile
+
+" \d for pdb
+nnoremap <Leader>d oimport pdb; pdb.set_trace();<Esc>
+
+:inoremap <esc> <nop>
+:xnoremap <esc> <nop>
+autocmd VimEnter * Arpeggio inoremap jk  <Esc>
+autocmd VimEnter * Arpeggio xnoremap jk  <Esc>
+autocmd VimEnter * Arpeggio inoremap JK  <Esc>
+autocmd VimEnter * Arpeggio xnoremap JK  <Esc>
+" auto close completions on enter
+autocmd CompleteDone * pclose!
+
+let g:syntastic_html_checkers = []
+let g:syntastic_python_checkers = ['flake8']
+set splitbelow
+set splitright
+map gn :bn<cr>
+map gp :bp<cr>
+map gd :bd<cr>
+map gb :LustyJuggler<cr>
+set hidden
+set infercase
+xnoremap . :norm.<CR>
+xnoremap Q :'<,'>:normal @q<CR>
+
