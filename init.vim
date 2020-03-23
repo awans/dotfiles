@@ -1,7 +1,8 @@
 if &compatible
   set nocompatible
 endif
-set runtimepath+=/Users/awans/.vim/bundles/repos/github.com/Shougo/dein.vim
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+
 set mouse=a
 
 if dein#load_state('/Users/awans/.vim/bundles')
@@ -21,6 +22,7 @@ if dein#load_state('/Users/awans/.vim/bundles')
   call dein#add('fisadev/vim-isort')
   call dein#add('octref/RootIgnore')
   call dein#add('junegunn/fzf')
+  call dein#add('junegunn/goyo.vim')
   call dein#add('vim-syntastic/syntastic')
   call dein#add('vim-airline/vim-airline')
   call dein#add('bling/vim-bufferline')
@@ -34,6 +36,11 @@ if dein#load_state('/Users/awans/.vim/bundles')
   call dein#add('scrooloose/nerdtree')
   call dein#add('justinmk/vim-sneak')
   call dein#add('andrew-d/vim-grep-syntax')
+  call dein#add('zah/nim.vim')
+  call dein#add('awans/agbuf')
+  call dein#add('evanleck/vim-svelte')
+  call dein#add('dcharbon/vim-flatbuffers')
+  call dein#add('fatih/vim-go')
   call dein#end()
   call dein#save_state()
 endif
@@ -116,10 +123,10 @@ nnoremap <Leader>d oimport pdb; pdb.set_trace();<Esc>
 
 " :inoremap <esc> <nop>
 " :xnoremap <esc> <nop>
-autocmd VimEnter * Arpeggio inoremap jk  <Esc>
-autocmd VimEnter * Arpeggio xnoremap jk  <Esc>
-autocmd VimEnter * Arpeggio inoremap JK  <Esc>
-autocmd VimEnter * Arpeggio xnoremap JK  <Esc>
+" autocmd VimEnter * Arpeggio inoremap jk  <Esc>
+" autocmd VimEnter * Arpeggio xnoremap jk  <Esc>
+" autocmd VimEnter * Arpeggio inoremap JK  <Esc>
+" autocmd VimEnter * Arpeggio xnoremap JK  <Esc>
 " auto close completions on enter
 autocmd CompleteDone * pclose!
 
@@ -143,49 +150,8 @@ set backupskip=/tmp/*,/private/tmp/*
 nmap <Leader>b :TagbarToggle<CR>
 nnoremap zz :w\|bd<cr>
 
-
-function! GotoFileWithLineNum()
-    " filename under the cursor
-    let file_name = expand('<cfile>')
-    if !strlen(file_name)
-        echo 'NO FILE UNDER CURSOR'
-        return
-    endif
-
-    " look for a line number separated by a :
-    if search('\%#\f*:\zs[0-9]\+')
-        " change the 'iskeyword' option temporarily to pick up just numbers
-        let temp = &iskeyword
-        set iskeyword=48-57
-        let line_number = expand('<cword>')
-        exe 'set iskeyword=' . temp
-    endif
-
-    " edit the file
-    exe 'e '.file_name
-
-    " if there is a line number, go to it
-    if exists('line_number')
-        exe line_number
-    endif
-endfunction
-
-map gf :call GotoFileWithLineNum()<CR>
-
-function! Ag(args)
-  let cmd = "ag " . a:args
-  echo "running: " . cmd
-  enew
-  setlocal buftype=nofile noswapfile
-  setlocal cursorline
-  execute "silent 0read !" . cmd
-  execute "silent file " . cmd
-
-  nnoremap <buffer> <Cr> ^:call GotoFileWithLineNum()<Cr>
-  setlocal nomodifiable
-  setlocal syntax=grep
-endfunction
-
 command! -nargs=* -complete=file Ag call Ag(<q-args>)
+
 nnoremap <Leader>a :Ag<Space>
 nmap <Leader>g :Ag <c-r>=expand("<cword>")<cr><Cr>
+
