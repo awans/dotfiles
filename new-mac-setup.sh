@@ -41,6 +41,8 @@ CASKS=(
     slack
     divvy
     1password
+    spotify
+    sonos
     bartender
 )
 
