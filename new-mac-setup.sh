@@ -9,13 +9,32 @@ fi
 # Update homebrew recipes
 brew update
 
+echo "Installing cask..."
+
+CASKS=(
+    google-chrome
+    dropbox-passwords
+    dropbox
+    iterm2
+    slack
+    divvy
+    homebrew/cask-drivers/sonos
+    sublime-text
+    bartender
+    discord
+)
+
+echo "Installing cask apps..."
+brew install --cask ${CASKS[@]}
+
+exit 0
+
 PACKAGES=(
+    asdf
     git
     graphviz
     github/gh/gh
     npm
-    python
-    python3
     the_silver_searcher
     tree
     vim
@@ -30,24 +49,6 @@ brew install ${PACKAGES[@]}
 
 echo "Cleaning up..."
 brew cleanup
-
-echo "Installing cask..."
-brew install caskroom/cask/brew-cask
-
-CASKS=(
-    dropbox
-    google-chrome
-    iterm2
-    slack
-    divvy
-    1password
-    spotify
-    sonos
-    bartender
-)
-
-echo "Installing cask apps..."
-brew cask install ${CASKS[@]}
 
 echo "Installing fonts..."
 brew tap caskroom/fonts
@@ -70,5 +71,10 @@ echo "Configuring OSX..."
 
 # Show filename extensions by default
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+
+echo "Configuring asdf..."
+
+echo -e "\n. $(brew --prefix asdf)/asdf.sh" >> ~/.zshrc
+
 
 echo "All done!"
